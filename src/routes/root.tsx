@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Form, Link, LoaderFunction, Outlet, useLoaderData } from 'react-router-dom'
+import { Form, LoaderFunction, NavLink, Outlet, useLoaderData, useNavigation } from 'react-router-dom'
 import { createdContact, getContacts } from '../contacts'
 import { LoaderData } from '../types'
 
@@ -15,6 +15,7 @@ export const action = async () => {
 
 const Root: FC = () => {
   const { contacts } = useLoaderData() as LoaderData<typeof loader>
+  const navigation = useNavigation()
 
   return (
     <>
@@ -37,7 +38,10 @@ const Root: FC = () => {
               <ul>
                 {contacts.map((contact) => (
                   <li key={contact.id}>
-                    <Link to={`contacts/${contact.id}`}>
+                    <NavLink
+                      to={`contacts/${contact.id}`}
+                      className={({ isActive, isPending }) => (isActive ? 'active' : isPending ? 'pending' : '')}
+                    >
                       {contact.first || contact.last ? (
                         <>
                           {contact.first} {contact.last}
@@ -46,7 +50,7 @@ const Root: FC = () => {
                         <i>No Name</i>
                       )}{' '}
                       {contact.favorite && <span>★</span>}
-                    </Link>
+                    </NavLink>
                   </li>
                 ))}
               </ul>
@@ -56,7 +60,7 @@ const Root: FC = () => {
           </ul>
         </nav>
       </div>
-      <div id="detail">
+      <div id="detail" className={navigation.state === 'loading' ? 'loading' : ''}>
         <Outlet />
       </div>
     </>

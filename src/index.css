@@ -222,7 +222,6 @@ i {
   border-radius: 8px;
   color: inherit;
   text-decoration: none;
-
   white-space: pre;
 }
 
@@ -230,11 +229,13 @@ i {
   background: #e3e3e3;
 }
 
+/* 当前 active 的 NavLink */
 #sidebar nav a.active {
   background: hsl(224, 98%, 58%);
   color: white;
 }
 
+/* pending 状态 */
 #sidebar nav a.pending {
   color: hsl(224, 98%, 58%);
 }
@@ -245,6 +246,7 @@ i {
   padding: 2rem 4rem;
 }
 
+/* 当前导航状态，idle | loading | submitting，淡入淡出的效果 */
 #detail.loading {
   opacity: 0.25;
   transition: opacity 200ms;
