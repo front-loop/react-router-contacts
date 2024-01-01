@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Form, LoaderFunction, redirect, useLoaderData } from 'react-router-dom'
+import { Form, LoaderFunction, redirect, useLoaderData, useNavigate } from 'react-router-dom'
 import { LoaderData } from '../types'
 import { loader as contactLoader } from './contact'
 import { updateContact } from '../contacts'
@@ -13,6 +13,7 @@ export const action = (async ({ request, params }) => {
 
 const EditContact: FC = () => {
   const { contact } = useLoaderData() as LoaderData<typeof contactLoader>
+  const navigate = useNavigate()
 
   return (
     <Form method="post" id="contact-form">
@@ -41,7 +42,10 @@ const EditContact: FC = () => {
       </label>
       <p>
         <button type="submit">Save</button>
-        <button type="button">Cancel</button>
+        {/* button type 防止默认默认提交动作 */}
+        <button type="button" onClick={() => navigate(-1)}>
+          Cancel
+        </button>
       </p>
     </Form>
   )
