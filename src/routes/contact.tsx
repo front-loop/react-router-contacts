@@ -1,12 +1,44 @@
 import { FC } from 'react'
-import { Form, LoaderFunction, useLoaderData } from 'react-router-dom'
-import { getContact } from '../contacts'
-import { LoaderData } from '../types'
+import { ActionFunction, Form, LoaderFunction, useFetcher, useLoaderData } from 'react-router-dom'
+import { getContact, updateContact } from '../contacts'
+import { ContactItem, LoaderData } from '../types'
 
 export const loader = (async ({ params }) => {
   const contact = await getContact(params.contactId!)
+  if (!contact) {
+    throw new Response("", {
+      status: 404,
+      statusText: 'Not Found'
+    })
+  }
   return { contact }
 }) satisfies LoaderFunction
+
+export const action = (async ({ request, params }) => {
+  const formData = await request.formData()
+  return updateContact(params.contactId!, {
+    favorite: formData.get('favorite') === 'true',
+  })
+}) satisfies ActionFunction
+
+const Favorite: FC<{ contact: ContactItem }> = ({ contact }) => {
+  const fetcher = useFetcher()
+  let favorite = contact.favorite
+
+  // 乐观 UI，点击后立马改变状态，网络操作完成后会回到实际状态
+  if (fetcher.formData) {
+    favorite = fetcher.formData.get('favorite') === 'true'
+  }
+
+  return (
+    // 跟 Form 的最大区别就是，URL 不会改变
+    <fetcher.Form method="post">
+      <button name="favorite" value={favorite ? 'false' : 'true'} aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}>
+        {favorite ? '★' : '☆'}
+      </button>
+    </fetcher.Form>
+  )
+}
 
 const Contact: FC = () => {
   const { contact } = useLoaderData() as LoaderData<typeof loader>
@@ -26,6 +58,7 @@ const Contact: FC = () => {
           ) : (
             <i>No Name</i>
           )}{' '}
+          <Favorite contact={contact!} />
         </h1>
 
         {contact?.twitter && (
