@@ -1,11 +1,13 @@
-import { FC } from 'react'
-import { Form, LoaderFunction, NavLink, Outlet, useLoaderData, useNavigation } from 'react-router-dom'
+import { FC, useEffect, useState } from 'react'
+import { Form, LoaderFunction, NavLink, Outlet, useLoaderData, useNavigation, useSubmit } from 'react-router-dom'
 import { createdContact, getContacts } from '../contacts'
 import { LoaderData } from '../types'
 
-export const loader = (async () => {
-  const contacts = await getContacts()
-  return { contacts }
+export const loader = (async ({ request }) => {
+  const url = new URL(request.url)
+  const q = url.searchParams.get('q') || ''
+  const contacts = await getContacts(q)
+  return { contacts, q }
 }) satisfies LoaderFunction
 
 export const action = async () => {
@@ -14,19 +16,40 @@ export const action = async () => {
 }
 
 const Root: FC = () => {
-  const { contacts } = useLoaderData() as LoaderData<typeof loader>
+  const { contacts, q } = useLoaderData() as LoaderData<typeof loader>
+  const [query, setQuery] = useState(q)
   const navigation = useNavigation()
+  const submit = useSubmit()
+  const searching = navigation.location && new URLSearchParams(navigation.location.search).has('q')
+
+  useEffect(() => {
+    setQuery(q)
+  }, [q])
 
   return (
     <>
       <div id="sidebar">
         <h1>React Router Contacts</h1>
         <div>
-          <form id="search-form" role="search">
-            <input id="q" aria-label="Search contacts" placeholder="Search" type="search" name="q" />
-            <div id="search-spinner" aria-hidden hidden={true} />
+          <Form id="search-form" role="search">
+            <input
+              id="q"
+              aria-label="Search contacts"
+              placeholder="Search"
+              type="search"
+              name="q"
+              defaultValue={query}
+              onChange={(e) => {
+                setQuery(e.target.value)
+                submit(e.currentTarget.form, {
+                  replace: q == null,
+                })
+              }}
+              className={searching ? 'loading' : ''}
+            />
+            <div id="search-spinner" aria-hidden hidden={!searching} />
             <div className="sr-only" aria-live="polite"></div>
-          </form>
+          </Form>
           {/* action 会响应这个 post 请求 */}
           <Form method="post">
             <button type="submit">New</button>

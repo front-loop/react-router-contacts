@@ -19,7 +19,7 @@ function set(contacts: ContactItem[]): Promise<ContactItem[]> {
   return localforage.setItem('contacts', contacts)
 }
 
-export async function getContacts(query?: string): Promise<ContactItem[]> {
+export async function getContacts(query: string | null): Promise<ContactItem[]> {
   await fakeNetwork(`getContacts:${query}`)
   let contacts: ContactItem[] = (await localforage.getItem('contacts')) || []
 
@@ -39,7 +39,7 @@ export async function createdContact(): Promise<ContactItem> {
   await fakeNetwork('')
   const id = Math.random().toString(36).substring(2, 9)
   const contact: ContactItem = { id, createdAt: Date.now() }
-  const contacts = await getContacts()
+  const contacts = await getContacts(null)
   contacts.unshift(contact)
   await set(contacts)
   return contact
