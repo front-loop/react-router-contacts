@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import { ActionFunction, Form, LoaderFunction, useFetcher, useLoaderData } from 'react-router-dom'
 import { getContact, updateContact } from '../contacts'
 import { ContactItem, LoaderData } from '../types'
@@ -6,9 +5,9 @@ import { ContactItem, LoaderData } from '../types'
 export const loader = (async ({ params }) => {
   const contact = await getContact(params.contactId!)
   if (!contact) {
-    throw new Response("", {
+    throw new Response('', {
       status: 404,
-      statusText: 'Not Found'
+      statusText: 'Not Found',
     })
   }
   return { contact }
@@ -21,7 +20,7 @@ export const action = (async ({ request, params }) => {
   })
 }) satisfies ActionFunction
 
-const Favorite: FC<{ contact: ContactItem }> = ({ contact }) => {
+const Favorite = ({ contact }: { contact: ContactItem }) => {
   const fetcher = useFetcher()
   let favorite = contact.favorite
 
@@ -40,7 +39,7 @@ const Favorite: FC<{ contact: ContactItem }> = ({ contact }) => {
   )
 }
 
-const Contact: FC = () => {
+export default function Contact() {
   const { contact } = useLoaderData() as LoaderData<typeof loader>
 
   return (
@@ -92,5 +91,3 @@ const Contact: FC = () => {
     </div>
   )
 }
-
-export default Contact

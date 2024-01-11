@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Form, LoaderFunction, NavLink, Outlet, useLoaderData, useNavigation, useSubmit } from 'react-router-dom'
 import { createdContact, getContacts } from '../contacts'
 import { LoaderData } from '../types'
@@ -15,7 +15,7 @@ export const action = async () => {
   return { contact }
 }
 
-const Root: FC = () => {
+export default function Root() {
   const { contacts, q } = useLoaderData() as LoaderData<typeof loader>
   const [query, setQuery] = useState(q)
   const navigation = useNavigation()
@@ -89,5 +89,3 @@ const Root: FC = () => {
     </>
   )
 }
-
-export default Root

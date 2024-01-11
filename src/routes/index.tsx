@@ -1,6 +1,4 @@
-import { FC } from 'react'
-
-const Index: FC = () => {
+export default function Index() {
   return (
     <p id="zero-state">
       This is a demo for React Router.
@@ -9,5 +7,3 @@ const Index: FC = () => {
     </p>
   )
 }
-
-export default Index

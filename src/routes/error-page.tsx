@@ -1,7 +1,6 @@
-import { FC } from 'react'
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom'
 
-const ErrorPage: FC = () => {
+export default function ErrorPage() {
   const error = useRouteError()
   let errorText = <p>Unknown Error</p>
 
@@ -21,5 +20,3 @@ const ErrorPage: FC = () => {
     </div>
   )
 }
-
-export default ErrorPage

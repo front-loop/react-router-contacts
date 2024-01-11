@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import { Form, LoaderFunction, redirect, useLoaderData, useNavigate } from 'react-router-dom'
 import { LoaderData } from '../types'
 import { loader as contactLoader } from './contact'
@@ -11,7 +10,7 @@ export const action = (async ({ request, params }) => {
   return redirect(`/contacts/${params.contactId}`)
 }) satisfies LoaderFunction
 
-const EditContact: FC = () => {
+export default function EditContact() {
   const { contact } = useLoaderData() as LoaderData<typeof contactLoader>
   const navigate = useNavigate()
 
@@ -50,5 +49,3 @@ const EditContact: FC = () => {
     </Form>
   )
 }
-
-export default EditContact
